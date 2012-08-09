@@ -1,0 +1,162 @@
+
+
+** workstation pre-reqs
+
+In order to work with the Gerrit server and include it as part of your deployment process, all developers in your project must have git-review installed.  
+
+
+Mac:
+
+On Mac OS, the easiest way to install git-review is with pip.  You probably need to install pip already if you haven't worked with other python-based tools in the past.
+
+To install pip:
+  sudo easy_install pip
+
+To install git-review:
+  sudo pip install git-review
+
+
+// TODO other operating systems for workstation setup
+Linux:
+
+
+Windows:
+
+
+(eclipse?)
+
+
+---
+** inside the chef repo
+
+The cd-tools repository contains a collection of cookbooks for installing all of the necessary components of the continuous delivery pipeline.  The main components are Gerrit and Jenkins.  Gerrit depends on a Postgresql database.  Both applications are web-based, and in this version of the tools we have chosen to run them under nginx as named virtual hosts. 
+
+administrator on the organization
+
+role jenkins
+  - installs the pieces you need, with all the deps
+  - sets up some of the attributes things need
+
+bootstrap the host into the org
+add the jenkins role to the host's run_list
+
+
+once the apps are running
+  first person to log into gerrit is the administrator
+  using openid right now
+  register your public key with gerrit
+    so you can do ssh magic with gerrit's git
+    you can do anything from the command line with ssh that you can do on the webui
+  add a user for gerrit / jenkins to communicate
+    you have an ssh key for jenkins already
+    run the ssh command that is in the README
+  Permissions
+    use the picture from skitch to talk about the permissions
+    registered users should not be able to do verification
+    add the jenkins user to the non-interactive group
+  git@github keys
+    mirroring gerrit repo to github
+    developers will always clone/pull from github; only gerrit will push
+  
+
+jenkins
+
+  client key for the server in the right place
+  knife client create "jenkins", add to the admin group of this org
+  put the key in /var/lib/jenkins/.chef on the server
+
+manage jenkins
+  gerrit server should have some config in it
+  sudo su - jenkins
+  ssh -p29148 localhost
+    accept the key - fix the yes/no known_hosts
+  
+
+build the first project in gerrit
+  call it "cd-tools"
+  projects->create new->inherit rights
+  don't need initial commit - already have a repo
+  "merge if necessary"
+  can never remove a project
+  conflicts
+  "require change id" - you would normally see all the interstitial checkins with git
+    only the last commit is the important part and is important to the history
+    at the end, compress all of the interstitial work into one single commit
+    "this commit is the new version of the old one"
+    without it, you'll have to keep approving all the bullshit commits - all of the little commits end 
+      up requiring it's own review
+  "review N, patch set M"
+ 
+
+.gitreview setup
+  different remotes
+  remote for gerrit
+  have a file at the top of every project
+  have to set the remote gerrit server
+  create .gitreview by hand
+  
+never be pushing to gerrit master
+  have to take those permissions away from anyone who doesn't explicitly need it
+  make a group, put yourself in, run the command you need, take yourself out
+  tests run not matter how you get those changes into the repo, but they're not looking for things like 
+    "rm -rf /" pushed by someone malicious
+
+make a commit
+  run "git review" to push to gerrit
+  shows you where the review is
+  under the hood
+    publish a reference in git
+    makes a short-lived branch and merges
+
+go to gerrit to process the review
+  jenkins is the first reviewer
+  foodcritic and syntax checks
+  can make inline comments in the diffs, etc
+ 
+gerrit magic
+  console output  
+  make the fixing - code? set up?
+  set up : rerun the jenkins tests if you don't; new jenkins job on the same event because it was 
+    environmental and not code based problem
+    retriggers all of the jobs needed for the current task
+  you'll look at the console a lot
+  new commits when you run "git review"
+  you don't need the first review by itself to be reviewed, you need both of them 
+    git rebase -i HEAD-N
+      where N is the number of piled up commits
+
+      take the last two commits and squash them; change a pick to an s
+  now run git review with the new one
+  now see patchset 2
+
+  go back to jenkins to see the new jobs
+
+what it's doing
+  checking the current shit vs what's in the chef server
+  bump the metadata for cookbooks with changes
+  jenkins can update the gerrit master
+  have an environment for the servers that are the targets for the build
+  set the environment constraints for the cookbook versions
+    change the pins before the upload so preconditions fail waiting for uploads
+    we want the failure so we can guarantee that the clients fail with the download not a run 
+ 
+now go to your workstation and pull the updates
+
+  on your local master branch
+  git pull --rebase origin master 
+  
+what's next
+  
+Later stuff
+  * putting in a different webserver
+  * replaceing openid with something else
+  * talk about the wild shit the permissions can do
+  * talk about what gerrit is doing with the merge options when creating a new project
+  * example workflows for development
+  * screen caps for working through a gerrit flow
+  * jenkins is distributed make
+  * need to fix the foodcritic errors for the community cookbooks we're going to ship with this thing
+  * bumping the cookbook versions 
+  * troubleshooting and where you'd want to use knife cookbook upload
+  * the jenkins weather: is there stability? has the build failed a lot in the past? thunder!
+  * jenkins and colorblind lolz.
