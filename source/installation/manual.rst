@@ -10,7 +10,7 @@ Adding the First User to Gerrit
 -------------------------------
 The Gerrit server needs an initial administrative user to get started.  
 
-In a web browser, go to the Gerrit server using the hostname included in your `jenkins` role as the `['cd-tools']['gerrit']['front_end_url']`. Click "register" in the upper right corner. The current version of the toolset integrates with OpenID for authentication, so you can use an OpenID linked account to establish your user on the Gerrit server.
+In a web browser, go to the Gerrit server using the hostname included in your ``jenkins`` role as the ``['cd-tools']['gerrit']['front_end_url']``. Click "register" in the upper right corner. The current version of the toolset integrates with OpenID for authentication, so you can use an OpenID linked account to establish your user on the Gerrit server.
 
 The first user becomes the administrative user for the Gerrit system. This user is able to create additional users and delegate administrative privileges to them. 
 
@@ -53,6 +53,9 @@ TODO:  verify file location for this config gerrit's .gitconfig?
 
 Configure replication
 
+
+.. code-block:: ruby
+
     [remote "github"]
       url = git@github.com:#{githubuser}/#{repo-name}
       push = +refs/heads/*:refs/heads/*
@@ -81,7 +84,7 @@ Gerrit and Jenkins will communicate using Gerrit's ssh daemon, which runs on por
 
 .. code-block:: ruby
 
-  cat /var/lib/jenkins/.ssh/id_rsa.pub | ssh -p29418 adam@review.local gerrit create-account --email 'jenkins@jenkins.local' --ssh-key - --full-name Jenkins jenkins
+  cat /var/lib/jenkins/.ssh/id_rsa.pub | ssh -p29418 USER@review.local gerrit create-account --email 'jenkins@jenkins.local' --ssh-key - --full-name Jenkins jenkins
 
 In the Gerrit web ui, add the ``jenkins`` user to the "Non-Interactive Users" group so it will have the appropriate permissions.
 
