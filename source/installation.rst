@@ -18,7 +18,7 @@ _ :doc: `Workstation Set Up </installation/workstation>`: Installing the needed 
 
 Contents:
 
-.. toctree:
+.. toctree::
    :maxdepth: 2
 
    installation/prereqs

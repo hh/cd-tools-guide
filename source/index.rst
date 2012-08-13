@@ -8,9 +8,12 @@ Continuous Delivery Tools Guide
 
 Welcome to the Continuous Delivery Tools Guide.  This document will help you understand and apply continous delivery methods in your Chef environment.
 
-* :repo: `Contents of the Repository </repo>` - The cookbooks, roles, and other items in this repository.
-* :install: `Installation </installation>` - Installing the CD tools pipeline using the recipes in this repository.
-* :pipeline: `Working with the Pipeline </pipeline>` - How to work with your new Continuous Delivery Pipeline!
+* :doc:`Contents of the Repository </repo>` - The cookbooks, roles, and other items in this repository.
+* :doc:`Installation </installation>` - Installing the CD tools pipeline using the recipes in this repository.
+* :doc:`How users interact with the tools </user_workflow>` - Documentation for code-writing hero types.
+* :doc:`Working with the Pipeline </pipeline>` - How to work with your new Continuous Delivery Pipeline!
+
+TODO: add ability to download pdf
 
 Contents:
 
@@ -18,7 +21,8 @@ Contents:
    :maxdepth: 2
 
    repo
-   install
+   installation
+   user_workflow
    pipeline
 
 Indices and tables
