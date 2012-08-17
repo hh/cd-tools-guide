@@ -151,3 +151,7 @@ doctest:
 	$(SPHINXBUILD) -b doctest $(ALLSPHINXOPTS) $(BUILDDIR)/doctest
 	@echo "Testing of doctests in the sources finished, look at the " \
 	      "results in $(BUILDDIR)/doctest/output.txt."
+
+upload: html latexpdf
+	scp build/latex/CDToolsGuide.pdf build/html/
+	scp -r -i ~/.ssh/mandi_opscode.pem build/html/* root@ec2-23-20-197-151.compute-1.amazonaws.com:/var/www/nginx-default
