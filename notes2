@@ -1,0 +1,13 @@
+changing pieces of data without rolling through the entire build process: putting data into databags for use without triggering a whole new build
+  a "config" top level, with necessary bits in it for a specific release. 
+  finding the overrides in the databags for the attributes
+  how much do you need to have changable per-release, which of those things are explicitly related to only a release?
+  in recipes/cookbooks, provides different flexibility, can do better logic on the data points
+  "deploy.json" file in the repo, one version in the repo, contains only the values correct for the current release
+  "if you have a deploy_config.json in your repo, roll through it and import into node attributes". this is pretty free-form, but should be predictable so it is repeatable for multiple projects.
+
+prepping a project for CI/CD
+* sanitizing properties files, making your environments / infrastructure sane for multi-phase automation (mongo.dev.blah.com, mongo.int.blah.com, mongo.qa.blah.com, etc etc etc)
+* setting up the application healthchecks to autoremove from loadbalancers if possible
+
+
